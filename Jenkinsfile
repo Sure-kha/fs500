@@ -1,57 +1,43 @@
-def gv
+
 pipeline{
   agent any
-  parameters{
-    choice(name:'VERSION',choices:['1.1.0','1.2.0','1.3.0'],description:'')
-    booleanParam(name:'excuteTests',defaultValue:true,description:'')
+  tools{
+    node 'nodejs'
   }
+  
+  
 
   stages{
-    stage("init"){
+    
+    stage("build node"){
       steps{
         script{
-          gv=load "script.groovy"
-        }
-      }
-    }
-    stage("build"){
-      steps{
-        script{
-          gv.buildApp()
+          echo "building the application..."
+          sh 'npm install'
         }
         
   }
     
 }
-    stage("test"){
-      when{
-        expression{
-          params.excuteTests
-        }
-      }
+    stage("build image"){
       steps{
         script{
-          gv.testApp()
+          echo "building the docker image..."
+          withCredentials([usernamePassword(credentialsId:'docker-hub',passwordVariable:'PASS',userVariable:'USER')])
+          sh 'docker build -t surekha1988/demo-app:2.0 .'
+          sh "echo $PASS | docker login -u $USER --password-stdin"
+          sh 'docker push surekha1988/demo-app:2.0'
         }
       }
     }
+    
     stage("deploy"){
-      input{
-        message "Select the Environment to deploy to"
-        ok "Done"
-        parameters{
-          choice(name:'ONE',choices:['dev','staging','production'],description:'')
-           choice(name:'TWO',choices:['dev','staging','production'],description:'')
+      steps{
+        script{
+          echo "deploying the application..."
         }
       }
      
-      steps{
-        script{
-          gv.deployApp()
-          echo "deploying to ${ONE}"
-          echo "deploying to ${TWO}"
-        }
-      }
     }
       }
     }
