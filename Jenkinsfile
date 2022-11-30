@@ -1,19 +1,24 @@
 pipeline{
   agent any
-  environment{
-    NEW_VERSION='1.3.0'
-    SERVER_CREDENTIALS=credentials('server-credentials')
-    
+  parameters{
+    choice(name:'VERSION',choices:['1.1.0','1.2.0','1.3.0'],description:'')
+    booleanParam(name:'excuteTests',defaultValue:true,description:'')
   }
+
   stages{
     stage("build"){
       steps{
         echo 'building the application...'
-        echo "building version ${NEW_VERSION}"
+        
   }
     
 }
     stage("test"){
+      when{
+        expression{
+          params.excuteTests
+        }
+      }
       steps{
         echo 'testing the application...'
       }
@@ -22,8 +27,7 @@ pipeline{
      
       steps{
          echo 'deploying the application...'
-        echo "deploying application ${SERVER_CREDENTIALS}"
-        sh "${SERVER_CREDENTIALS}"
+        echo "deploying version ${params.VERSION}"
       }
     }
       }
