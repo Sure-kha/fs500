@@ -20,7 +20,7 @@ pipeline{
           echo "building the docker image..."
           withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
         	sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-          sh 'docker push surekha1988/sample:1.0'
+          sh 'docker push surekha1988/fs-app:2.0'
           }
         }
       }
