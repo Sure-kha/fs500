@@ -1,9 +1,7 @@
 
 pipeline{
   agent any
-  tools{
-    node 'nodejs'
-  }
+  
   
   
 
@@ -13,7 +11,7 @@ pipeline{
       steps{
         script{
           echo "building the application..."
-          sh 'npm install'
+         
         }
         
   }
