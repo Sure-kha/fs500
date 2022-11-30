@@ -2,10 +2,7 @@
 pipeline{
   agent any
   
-  
-  
-
-  stages{
+   stages{
     
     stage("build node"){
       steps{
@@ -24,6 +21,7 @@ pipeline{
           withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
         	sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
           sh 'docker push surekha1988/sample:1.0'
+          }
         }
       }
     }
