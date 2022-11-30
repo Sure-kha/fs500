@@ -21,7 +21,9 @@ pipeline{
       steps{
         script{
           echo "building the docker image..."
-          sh 'docker build -t pipe.1.0 .'
+          withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+        	sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+          sh 'docker push surekha1988/sample:1.0'
         }
       }
     }
