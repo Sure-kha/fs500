@@ -4,30 +4,35 @@ pipeline{
   
    stages{
     
-    stage("build node"){
+    stage("test"){
       steps{
         script{
-          echo "building the application..."
-         
+        echo 'testing the application.....'
+        echo "Excuting the application for branch $BRANCH_NAME"
         }
-        
   }
     
 }
     stage("build image"){
+      when {
+        expression{
+          BRANCH_NAME =='main'
+        }
+      }
       steps{
         script{
-          echo "building the docker image..."
-          withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-          sh 'docker build -t surekha1988/pipeline:2.0 .  '
-        	sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-          sh 'docker push surekha1988/pipeline:2.0'
-          }
+          echo "Building the application..."
         }
+        
       }
     }
     
     stage("deploy"){
+       when {
+        expression{
+          BRANCH_NAME =='main'
+        }
+      }
       steps{
         script{
           echo "deploying the application..."
